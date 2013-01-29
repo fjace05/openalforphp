@@ -1,0 +1,64 @@
+/* $Id: config.w32 298265 2010-04-21 17:54:31Z markskilbeck $ */
+
+ARG_WITH("openal", "OpenAL Library", "no");
+
+if (PHP_OPENAL != "no") {
+	AC_DEFINE("WITH_OPENAL", 1, "Whether you want PHP-OpenAL")
+	MESSAGE("Checking for AL/al.h, AL/alc.h, and friends")
+	
+	headersFound = true;
+	if(!CHECK_HEADER_ADD_INCLUDE("AL/al.h", "CFLAGS_OPENAL", null, null, true))
+	{
+		WARNING("Could not find AL/al.h; Skipping;")
+		headersFound = false;
+	}
+	if(!CHECK_HEADER_ADD_INCLUDE("AL/alc.h", "CFLAGS_OPENAL", null, null, true))
+	{
+		WARNING("Could not find AL/alc.h; Skipping;")
+		headersFound = false;
+	}
+	if(!CHECK_HEADER_ADD_INCLUDE("AL/alext.h", "CFLAGS_OPENAL", null, null, true))
+	{
+		WARNING("Could not find AL/alcext.h; Skipping;")
+		headersFound = false;
+	}
+	if(!CHECK_HEADER_ADD_INCLUDE("AL/efx.h", "CFLAGS_OPENAL", null, null, true))
+	{
+		WARNING("Could not find AL/efx.h; Skipping;")
+		headersFound = false;
+	}
+	if(!CHECK_HEADER_ADD_INCLUDE("AL/efx-creative.h", "CFLAGS_OPENAL", null, null, true))
+	{
+		WARNING("Could not find AL/efx-creative.h; Skipping;")
+		headersFound = false;
+	}
+	if(!CHECK_HEADER_ADD_INCLUDE("AL/efx-presets.h", "CFLAGS_OPENAL", null, null, true))
+	{
+		WARNING("Could not find AL/efx-presets.h; Skipping;")
+		headersFound = false;
+	}
+	
+	if(headersFound)
+	{
+		libsFound = true
+		if(!CHECK_LIB("libOpenAL32_a.lib"))
+		{
+			libsFound = false;
+		}
+		
+		
+		if(libsFound)
+		{
+			EXTENSION("openal", "php_openal.c")
+			AC_DEFINE("HAVE_OPENAL", 1);
+		}
+		else
+		{
+			WARNING("One or more of the libraries could not be found.")
+		}
+	}
+	else
+	{
+		WARNING("One or more of the headers could not be found. OpenAL will not be included.")
+	}
+}
